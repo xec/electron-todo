@@ -21,15 +21,13 @@
   });
 
   let uid = 1;
-
-  let todos = [
-    { id: uid++, done: false, description: "write some docs" },
-    { id: uid++, done: false, description: "start writing blog post" },
-    { id: uid++, done: true, description: "buy some milk" },
-    { id: uid++, done: false, description: "mow the lawn" },
-    { id: uid++, done: false, description: "feed the turtle" },
-    { id: uid++, done: false, description: "fix some bugs" }
-  ];
+  let todos = [];
+  // fetch state from localStorage (if any)
+  if (localStorage.todos) {
+    todos = JSON.parse(localStorage.todos);
+    uid = todos.reduce((p, c) => (c.id > p ? c.id : p), 0) + 1;
+    console.log(todos, uid);
+  }
 
   function add(input) {
     const todo = {
@@ -50,6 +48,10 @@
     todo.done = done;
     remove(todo);
     todos = todos.concat(todo);
+  }
+
+  $: {
+    localStorage.todos = JSON.stringify(todos);
   }
 </script>
 
@@ -123,29 +125,29 @@
   <input
     placeholder="what needs to be done?"
     on:keydown={e => e.which === 13 && add(e.target)} />
-
-  <div class="left">
-    <h2>todo</h2>
-    {#each todos.filter(t => !t.done) as todo (todo.id)}
-      <label in:receive={{ key: todo.id }} out:send={{ key: todo.id }}>
-        <input type="checkbox" on:change={() => mark(todo, true)} />
-        {todo.description}
-        <button on:click={() => remove(todo)}>remove</button>
-      </label>
-    {/each}
-  </div>
-
-  <div class="right">
-    <h2>done</h2>
-    {#each todos.filter(t => t.done) as todo (todo.id)}
-      <label
-        class="done"
-        in:receive={{ key: todo.id }}
-        out:send={{ key: todo.id }}>
-        <input type="checkbox" checked on:change={() => mark(todo, false)} />
-        {todo.description}
-        <button on:click={() => remove(todo)}>remove</button>
-      </label>
-    {/each}
-  </div>
+  {#if todos.length}
+    <div class="left">
+      <h2>todo</h2>
+      {#each todos.filter(t => !t.done) as todo (todo.id)}
+        <label in:receive={{ key: todo.id }} out:send={{ key: todo.id }}>
+          <input type="checkbox" on:change={() => mark(todo, true)} />
+          {todo.description}
+          <button on:click={() => remove(todo)}>remove</button>
+        </label>
+      {/each}
+    </div>
+    <div class="right">
+      <h2>done</h2>
+      {#each todos.filter(t => t.done) as todo (todo.id)}
+        <label
+          class="done"
+          in:receive={{ key: todo.id }}
+          out:send={{ key: todo.id }}>
+          <input type="checkbox" checked on:change={() => mark(todo, false)} />
+          {todo.description}
+          <button on:click={() => remove(todo)}>remove</button>
+        </label>
+      {/each}
+    </div>
+  {/if}
 </div>

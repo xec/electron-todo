@@ -11,6 +11,7 @@ function createWindow() {
     width: 900,
     height: 680
   });
+  mainWindow.removeMenu();
 
   let watcher;
   if (process.env.NODE_ENV === "development") {
