@@ -15,7 +15,7 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-node-resolve": "^7.0.0",
-    "@xec/svelte-todo": "^1.0.0",
+    "@xec/svelte-todo": "^1.0.3",
     "appjs-win32": "0.0.19",
     "chokidar": "^3.3.1",
     "electron": "^8.0.2",
